@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Happy Kids Online Toy Store</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#fff7ec;color:#3b2b2b;transition:background 1s}
+header{background:#482626;color:white;padding:15px 7%;display:flex;justify-content:space-between;align-items:center}
+header h1{margin:0;color:#ffd17a;font-size:22px}.hero{background:#62453e;color:white;text-align:center;padding:25px}
+main{max-width:950px;margin:25px auto;padding:0 18px}.card{background:white;padding:20px;margin:15px 0;border-radius:10px;box-shadow:0 3px 12px #0001}
+h3{margin-top:0;color:#512f2f}#hoverText{font-size:16px;line-height:1.5}.road{height:70px;background:#555;border-radius:6px;position:relative;overflow:hidden;margin:12px 0}
+.road:after{content:"";position:absolute;left:0;right:0;top:34px;border-top:2px dashed white}
+#toyCar{position:absolute;left:0;top:10px;font-size:38px;z-index:2}
+button{border:0;border-radius:5px;padding:9px 17px;margin-right:7px;background:#e4a83d;color:white;cursor:pointer}
+.stop{background:#482626}table{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px}
+th,td{border:1px solid #ddd;padding:9px;text-align:left}th{background:#482626;color:white}.category{font-weight:bold;color:#187342}
+footer{background:#482626;color:white;text-align:center;padding:13px;font-size:12px;margin-top:30px}
+@media(max-width:600px){header{display:block;text-align:center}table{font-size:12px}.card{padding:15px}}
+</style></head>
+<body>
+<header><h1>🧸 Happy Kids Toy Store</h1><span><b id="time">--:--:--</b><br><small id="date"></small></span></header>
+<section class="hero"><h2>Welcome to Happy Kids Online Toy Store</h2><p>Fun toys, happy moments and creative learning!</p><p id="colorInfo">Background colour changes every 30 seconds.</p></section>
+<main>
+<section class="card"><h3>Change Font Size – Toy Store Note</h3>
+<p id="hoverText" onmouseover="incSize()" onmouseout="decSize()">Move the cursor over me to zoom in... Discover exciting toys at Happy Kids Toy Store. Every toy is selected to make playtime fun and creative!</p></section>
+<section class="card"><h3>Home Delivery Tracker</h3><p>Watch our toy delivery vehicle move along the road.</p>
+<div class="road" id="road"><div id="toyCar">🚚</div></div>
+<button onclick="moveRight()">Move</button><button class="stop" onclick="stopCar()">Stop</button><p id="deliveryStatus">Delivery vehicle is waiting at the store.</p></section>
+<section class="card"><h3>Today's Featured Toy (Class and Object)</h3><p id="specialToy"></p></section>
+<section class="card"><h3>Student Details (Array of Objects)</h3><div id="studentList"></div>
+<table><thead><tr><th>Name</th><th>Register Number</th><th>Year of Birth</th><th>Category</th></tr></thead><tbody id="studentTable"></tbody></table></section>
+</main><footer>© 2026 Happy Kids Online Toy Store | Web Technology Lab – Experiment 6</footer>
+<script>
+var days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+function display(){
+ var d=new Date(),h=d.getHours(),m=d.getMinutes(),s=d.getSeconds(),ampm=h>=12?"PM":"AM";
+ h=h%12||12;m=m<10?"0"+m:m;s=s<10?"0"+s:s;
+ document.getElementById("time").innerHTML=h+":"+m+":"+s+" "+ampm;
+ document.getElementById("date").innerHTML=days[d.getDay()]+", "+d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear();
+}
+display();setInterval(display,1000);
+function setBackgroundColor(){
+ var r=Math.floor(Math.random()*100)+155,g=Math.floor(Math.random()*100)+155,b=Math.floor(Math.random()*100)+155;
+ var color="rgb("+r+","+g+","+b+")";document.body.style.backgroundColor=color;
+ document.getElementById("colorInfo").innerHTML="Current background: "+color;
+}
+setInterval(setBackgroundColor,30000);
+function incSize(){document.getElementById("hoverText").style.fontSize="24px";}
+function decSize(){document.getElementById("hoverText").style.fontSize="16px";}
+var car,animate,roadWidth;
+function init(){car=document.getElementById("toyCar");roadWidth=document.getElementById("road").clientWidth;car.style.left="0px";}
+function moveRight(){
+ clearTimeout(animate);var left=parseInt(car.style.left||"0")+3;
+ if(left>roadWidth-55)left=0;car.style.left=left+"px";
+ document.getElementById("deliveryStatus").innerHTML="Delivery vehicle is on the way...";
+ animate=setTimeout(moveRight,30);
+}
+function stopCar(){clearTimeout(animate);car.style.left="0px";document.getElementById("deliveryStatus").innerHTML="Delivery vehicle has stopped at the store.";}
+window.onload=init;window.onresize=function(){roadWidth=document.getElementById("road").clientWidth;};
+class Toy{
+ constructor(name,price){this.toyname=name;this.price=price;}
+ present(){return "Today's featured toy is "+this.toyname+" for just ₹"+this.price+"!";}
+}
+var featured=new Toy("Teddy Bear",499);document.getElementById("specialToy").innerHTML=featured.present();
+var students=[
+ {name:"John",regno:"UR13CS129",yob:1995},
+ {name:"Amarnath",regno:"URK24CS1246",yob:2006},
+ {name:"Priya",regno:"URK24CS1210",yob:2005},
+ {name:"Rahul",regno:"UR17CS045",yob:1999},
+ {name:"Divya",regno:"URK24CS1233",yob:2006}
+];
+var list="",rows="";
+for(var i=0;i<students.length;i++){
+ var category=students[i].yob<2000?"Born before 2000":"Born in/after 2000";
+ list+="<p>"+students[i].name+"'s Register Number is "+students[i].regno+"</p>";
+ rows+="<tr><td>"+students[i].name+"</td><td>"+students[i].regno+"</td><td>"+students[i].yob+"</td><td class='category'>"+category+"</td></tr>";
+}
+document.getElementById("studentList").innerHTML=list;document.getElementById("studentTable").innerHTML=rows;
+</script></body></html>
